@@ -98,3 +98,37 @@ test_y = [i[1] for i in test]
 
 model.fit({'input': X}, {'targets': Y}, n_epoch=5, validation_set=({'input': test_x}, {'targets': test_y}), 
     snapshot_step=500, show_metric=True, run_id=MODEL_NAME)
+
+
+model.save(MODEL_NAME)
+
+
+import matplotlib.pyplot as plt
+
+test_data = process_test_data() 
+#if already have test_data() 
+# test_data = np.load('test_data.npy')
+
+
+fig = plt.figure() 
+
+for num, data in enumerate(test_data[:12]): 
+    img_num = data[1] 
+    img_data = data[0]
+    
+    y = fig.add_subplot(3,4,num+1)
+    orig = img_data 
+    data = img_data.reshape(IMG_SIZE, IMG_SIZE, 1)
+    
+    model_out = model.predict([data])[0]
+    
+    if np.argmax(model_out) == 1: str_label = 'Dog'
+    else: str_label = 'Cat'
+        
+    y.imshow(orig, cmap='gray')
+    
+    plt.title(str_label)
+    y.axes.get_xaxis().set_visible(False)
+    y.axes.get_yaxis().set_visible(False)
+    
+plt.show() 
